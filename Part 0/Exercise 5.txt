@@ -1,0 +1,12 @@
+Browser -> Server: HTTP GET /spa
+Server -> Browser: spa.html
+Browser -> Server: HTTP GET main.css
+Server -> Browser: main.css
+Browser -> Server: HTTP GET spa.js
+Server -> Browser: spa.js
+Browser -> Server: HTTP GET data.json
+Server -> Browser: data.json
+Browser -> Server: HTTP GET favicon.ico
+Server -> Browser: favicon.ico
+
+Browser loads data.json into notes section of applicaiton

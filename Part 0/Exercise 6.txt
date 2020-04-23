@@ -1,0 +1,4 @@
+Browser: Creates note object from from
+Browser: Appends new note object to current list of notes
+Browser -> Server: HTTP POST sending note object
+Server: Saves note to database

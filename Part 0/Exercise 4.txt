@@ -1,0 +1,17 @@
+Browser: Saves note object locally
+Browser -> Server: HTTP POST request with form data URL encoded
+Server: receives request and saves to database
+Server -> Browser: 302 redirect back to the notes page to refresh
+
+Browser -> Server: HTTP GET request /notes page
+Server -> Browser: notes.html
+Browser -> Server: HTTP GET request main.css
+Server -> Browser: main.css
+Browser -> Server: HTTP GET request main.js
+Server -> Browser: main.js
+Browser -> Server: HTTP GET request favicon.ico
+Server -> Browser: favicon.ico
+Browser -> Server: HTTP GET request data.json
+Server -> Browser: data.json
+
+Browser: loads data.json into notes field
