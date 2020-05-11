@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Persons from "./components/persons";
 import PersonForm from "./components/personform";
 import Filter from "./components/filter";
+import axios from 'axios';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "1234567890" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [nameFilter, setNameFilter] = useState("");
+
+  /* Set initial state of application */
+  useEffect(() => {
+    axios.get('http://localhost:3001/db')
+      .then(response => {
+        const { persons } = response.data;
+        setPersons(persons);
+      })
+  }, []);
 
   /* Filter people based on name */
   const peopleToShow = persons.filter((person) =>
