@@ -1,9 +1,9 @@
 import React from "react";
 
 const Person = ({ person }) => (
-  <p>
+  <span>
     {person.name}: {person.number}
-  </p>
+  </span>
 );
 
 export default Person;
