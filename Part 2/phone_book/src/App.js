@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from "react";
 
-import personService from './services/personService'
+import personService from "./services/personService";
 
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [nameFilter, setNameFilter] = useState("");
+  const [notificationText, setNotificationText] = useState("");
+  const [notificationType, setNotificationType] = useState("");
 
   /* Set initial state of application */
   useEffect(() => {
-    personService.getAll().then(persons => {
+    personService.getAll().then((persons) => {
       setPersons(persons);
-    }
-  )}, []);
+    });
+  }, []);
 
   /* Filter people based on name */
   const peopleToShow = persons.filter((person) =>
@@ -36,6 +39,11 @@ const App = () => {
     setNameFilter(event.target.value);
   };
 
+  const resetNotification = () => {
+    setNotificationText("");
+    setNotificationType("");
+  };
+
   const duplicatePerson = (persons, newName) =>
     persons.map((person) => person.name).includes(newName);
 
@@ -46,41 +54,76 @@ const App = () => {
     if (duplicatePerson(persons, newName)) {
       if (window.confirm(`Override phone number of ${newName}?`)) {
         /* ID of person already in DB */
-        const id = persons.find(person => person.name === newName).id;
-        personService.replacePerson(id, newPerson);
-        /* Update frontend data */
-        setPersons(persons.map(person => person.id === id ? { ...newPerson, id } : person ))
+        const id = persons.find((person) => person.name === newName).id;
+        personService.replacePerson(id, newPerson).then((modifiedPerson) => {
+          if (Object.keys(modifiedPerson).length === 0) {
+            setNotificationType("error");
+            setNotificationText(`${newPerson.name} not successfully modified`);
+
+            setTimeout(resetNotification, 5000);
+            return;
+          }
+          /* Update frontend data */
+          setNotificationType("success");
+          setNotificationText(
+            `Changed ${modifiedPerson.name}'s number to ${modifiedPerson.number}`
+          );
+          setPersons(
+            persons.map((person) =>
+              person.id === id ? modifiedPerson : person
+            )
+          );
+
+          setTimeout(resetNotification, 5000);
+        });
       }
       return;
     }
-    personService.addPerson(newPerson).then(person => {
+    personService.addPerson(newPerson).then((person) => {
+      if (Object.keys(person).length === 0) {
+        setNotificationType("error");
+        setNotificationText(`${newPerson.name} not successfully added`);
+
+        setTimeout(resetNotification, 5000);
+        return;
+      }
+      setNotificationType("success");
+      setNotificationText(`Added ${person.name} to phonebook`);
       setPersons([...persons, person]);
-  
+
       /* Reset form fields */
       setNewName("");
       setNewNumber("");
-  
+
       /* Focus first input */
       const firstInput = document.querySelector("form.phonebook-form input");
       firstInput.focus();
-    })
+
+      setTimeout(resetNotification, 5000);
+    });
   };
 
   const deletePerson = ({ name, id }) => () => {
     if (window.confirm(`Delete ${name}?`)) {
       personService.deletePerson(id).then((success) => {
         if (!success) {
-          alert(`Failed to delete ${name}`)
-          return
+          setNotificationType("error");
+          setNotificationText(`Failed to delete ${name} from phonebook`);
+          setTimeout(resetNotification, 5000);
+          return;
         }
-        setPersons(persons.filter(person => person.id !== id));
+        setNotificationType("success");
+        setNotificationText(`Deleted ${name} from phonebook`);
+        setPersons(persons.filter((person) => person.id !== id));
+        setTimeout(resetNotification, 5000);
       });
     }
-  }
+  };
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification text={notificationText} type={notificationType} />
       <Filter nameFilter={nameFilter} setNameFilterField={setNameFilterField} />
       <h2>Add new</h2>
       <PersonForm
