@@ -79,8 +79,8 @@ const App = () => {
       }
       return;
     }
-    personService.addPerson(newPerson).then((person) => {
-      if (Object.keys(person).length === 0) {
+    personService.addPerson(newPerson).then(({ id }) => {
+      if (!id) {
         setNotificationType("error");
         setNotificationText(`${newPerson.name} not successfully added`);
 
@@ -88,8 +88,8 @@ const App = () => {
         return;
       }
       setNotificationType("success");
-      setNotificationText(`Added ${person.name} to phonebook`);
-      setPersons([...persons, person]);
+      setNotificationText(`Added ${newPerson.name} to phonebook`);
+      setPersons([...persons, { ...newPerson, id }]);
 
       /* Reset form fields */
       setNewName("");
@@ -100,6 +100,13 @@ const App = () => {
       firstInput.focus();
 
       setTimeout(resetNotification, 5000);
+    }).catch(error => {
+      console.log(error)
+      setNotificationType("error");
+      setNotificationText(`${newPerson.name} not successfully added`);
+
+      setTimeout(resetNotification, 5000);
+      return;
     });
   };
 
