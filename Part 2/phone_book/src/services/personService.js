@@ -15,7 +15,7 @@ const addPerson = async (person) => {
 const deletePerson = async (id) => {
   try {
     const response = await axios.delete(`/persons/${id}`);
-    return response.status === 200;
+    return response.status === 204;
   } catch {
     return false;
   }
