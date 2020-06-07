@@ -13,21 +13,13 @@ const addPerson = async (person) => {
 };
 
 const deletePerson = async (id) => {
-  try {
     const response = await axios.delete(`/persons/${id}`);
-    return response.status === 204;
-  } catch {
-    return false;
-  }
+    return response.data;
 };
 
 const replacePerson = async (id, person) => {
-  try {
-    const response = await axios.put(`/persons/${id}`, person);
-    return response.data;
-  } catch {
-    return {};
-  }
+  const response = await axios.put(`/persons/${id}`, person);
+  return response.data;
 };
 
 export default { getAll, addPerson, deletePerson, replacePerson };

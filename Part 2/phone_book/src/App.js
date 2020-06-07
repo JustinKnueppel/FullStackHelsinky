@@ -52,78 +52,82 @@ const App = () => {
     const newPerson = { name: newName, number: newNumber };
 
     if (duplicatePerson(persons, newName)) {
+      console.log("duplicate person", newName)
       if (window.confirm(`Override phone number of ${newName}?`)) {
         /* ID of person already in DB */
         const id = persons.find((person) => person.name === newName).id;
-        personService.replacePerson(id, newPerson).then((modifiedPerson) => {
-          if (Object.keys(modifiedPerson).length === 0) {
-            setNotificationType("error");
-            setNotificationText(`${newPerson.name} not successfully modified`);
+        personService
+          .replacePerson(id, newPerson)
+          .then((modifiedPerson) => {
+            setNotificationType("success");
+            setNotificationText(
+              `Changed ${modifiedPerson.name}'s number to ${modifiedPerson.number}`
+              );
+              /* Update frontend data */
+            setPersons(
+              persons.map((person) =>
+                person.id === id ? modifiedPerson : person
+              )
+            );
 
             setTimeout(resetNotification, 5000);
-            return;
-          }
-          /* Update frontend data */
-          setNotificationType("success");
-          setNotificationText(
-            `Changed ${modifiedPerson.name}'s number to ${modifiedPerson.number}`
-          );
-          setPersons(
-            persons.map((person) =>
-              person.id === id ? modifiedPerson : person
-            )
-          );
-
-          setTimeout(resetNotification, 5000);
-        });
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+            const errorMessage = error.response.data.error;
+            setNotificationType("error");
+            setNotificationText(errorMessage);
+          });
       }
       return;
     }
-    personService.addPerson(newPerson).then(({ id }) => {
-      if (!id) {
+    personService
+      .addPerson(newPerson)
+      .then((savedPerson) => {
+        setNotificationType("success");
+        setNotificationText(`Added ${newPerson.name} to phonebook`);
+        setPersons([...persons, savedPerson]);
+
+        /* Reset form fields */
+        setNewName("");
+        setNewNumber("");
+
+        /* Focus first input */
+        const firstInput = document.querySelector("form.phonebook-form input");
+        firstInput.focus();
+
+        setTimeout(resetNotification, 5000);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        const errorMessage = error.response.data.error;
         setNotificationType("error");
-        setNotificationText(`${newPerson.name} not successfully added`);
+        setNotificationText(errorMessage);
 
         setTimeout(resetNotification, 5000);
         return;
-      }
-      setNotificationType("success");
-      setNotificationText(`Added ${newPerson.name} to phonebook`);
-      setPersons([...persons, { ...newPerson, id }]);
-
-      /* Reset form fields */
-      setNewName("");
-      setNewNumber("");
-
-      /* Focus first input */
-      const firstInput = document.querySelector("form.phonebook-form input");
-      firstInput.focus();
-
-      setTimeout(resetNotification, 5000);
-    }).catch(error => {
-      console.log(error)
-      setNotificationType("error");
-      setNotificationText(`${newPerson.name} not successfully added`);
-
-      setTimeout(resetNotification, 5000);
-      return;
-    });
+      });
   };
 
   const deletePerson = ({ name, id }) => () => {
     if (window.confirm(`Delete ${name}?`)) {
-      personService.deletePerson(id).then((success) => {
-        if (!success) {
-          setNotificationType("error");
-          setNotificationText(`Failed to delete ${name} from phonebook`);
+      personService
+        .deletePerson(id)
+        .then((data) => {
+          console.log(data);
+          setNotificationType("success");
+          setNotificationText(`Deleted ${name} from phonebook`);
+          setPersons(persons.filter((person) => person.id !== id));
           setTimeout(resetNotification, 5000);
-          return;
-        }
-        setNotificationType("success");
-        setNotificationText(`Deleted ${name} from phonebook`);
-        setPersons(persons.filter((person) => person.id !== id));
-        setTimeout(resetNotification, 5000);
-      });
+        })
+        .catch((error) => {
+          console.log(error.response.data);
+          const errorMessage = error.response.data.error;
+          setNotificationType("error");
+          setNotificationText(errorMessage);
+
+          setTimeout(resetNotification, 5000);
+        });
     }
   };
 
