@@ -139,3 +139,103 @@ describe("Most blogs", () => {
     expect(helpers.mostBlogs(blogs)).toEqual(mostBlogs);
   });
 });
+
+describe("Most likes", () => {
+  test("One blog with one author returns that blog's likes", () => {
+    const blogs = [
+      {
+        author: "author",
+        likes: 1,
+      },
+    ];
+    const mostLikes = {
+      author: "author",
+      likes: 1,
+    };
+    expect(helpers.mostLikes(blogs)).toEqual(mostLikes);
+  });
+
+  test("Two blogs with one author returns total likes", () => {
+    const blogs = [
+      {
+        author: "author",
+        likes: 1,
+      },
+      {
+        author: "author",
+        likes: 2,
+      },
+    ];
+    const mostLikes = {
+      author: "author",
+      likes: 3,
+    };
+    expect(helpers.mostLikes(blogs)).toEqual(mostLikes);
+  });
+
+  test("Two authors returns author with most likes", () => {
+    const blogs = [
+      {
+        author: "author",
+        likes: 1,
+      },
+      {
+        author: "author",
+        likes: 2,
+      },
+      {
+        author: "other author",
+        likes: 2,
+      },
+    ];
+    const mostLikes = {
+      author: "author",
+      likes: 3,
+    };
+    expect(helpers.mostLikes(blogs)).toEqual(mostLikes);
+  });
+
+  test("Author with fewer blogs has most likes", () => {
+    const blogs = [
+      {
+        author: "author",
+        likes: 1,
+      },
+      {
+        author: "author",
+        likes: 2,
+      },
+      {
+        author: "other author",
+        likes: 6,
+      },
+    ];
+    const mostLikes = {
+      author: "other author",
+      likes: 6,
+    };
+    expect(helpers.mostLikes(blogs)).toEqual(mostLikes);
+  });
+
+  test("Last author has most likes", () => {
+    const blogs = [
+      {
+        author: "author",
+        likes: 1,
+      },
+      {
+        author: "other author",
+        likes: 2,
+      },
+      {
+        author: "other author",
+        likes: 6,
+      },
+    ];
+    const mostLikes = {
+      author: "other author",
+      likes: 8,
+    };
+    expect(helpers.mostLikes(blogs)).toEqual(mostLikes);
+  });
+});

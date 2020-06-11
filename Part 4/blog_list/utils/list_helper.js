@@ -40,9 +40,26 @@ const mostBlogs = (blogs) => {
   return blogCounts[0];
 };
 
+const mostLikes = (blogs) => {
+  const authors = blogs.map((blog) => blog.author);
+  const uniqueAuthors = [...new Set(authors)];
+  const likeCounts = uniqueAuthors.map((author) => {
+    const authorsBlogs = blogs.filter((blog) => blog.author === author);
+    return {
+      author: author,
+      likes: totalLikes(authorsBlogs),
+    };
+  });
+  const mostLikes = likeCounts.sort(
+    (likeCount1, likeCount2) => likeCount2.likes - likeCount1.likes
+  );
+  return mostLikes[0];
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 };
