@@ -70,3 +70,72 @@ describe("Favorite blog", () => {
     expect(helpers.favoriteBlog(listWithMultipleBlogs)).toEqual(favoriteBlog);
   });
 });
+
+describe("Most blogs", () => {
+  test("One author with one blog", () => {
+    const blogs = [
+      {
+        author: "author",
+      },
+    ];
+    const mostBlogs = {
+      author: "author",
+      blogs: 1,
+    };
+    expect(helpers.mostBlogs(blogs)).toEqual(mostBlogs);
+  });
+
+  test("One author with multiple blogs", () => {
+    const blogs = [
+      {
+        author: "author",
+      },
+      {
+        author: "author",
+      },
+    ];
+    const mostBlogs = {
+      author: "author",
+      blogs: 2,
+    };
+    expect(helpers.mostBlogs(blogs)).toEqual(mostBlogs);
+  });
+
+  test("Two authors with different number of blogs", () => {
+    const blogs = [
+      {
+        author: "author",
+      },
+      {
+        author: "author",
+      },
+      {
+        author: "other author",
+      },
+    ];
+    const mostBlogs = {
+      author: "author",
+      blogs: 2,
+    };
+    expect(helpers.mostBlogs(blogs)).toEqual(mostBlogs);
+  });
+
+  test("Last author is most popular", () => {
+    const blogs = [
+      {
+        author: "author",
+      },
+      {
+        author: "other author",
+      },
+      {
+        author: "other author",
+      },
+    ];
+    const mostBlogs = {
+      author: "other author",
+      blogs: 2,
+    };
+    expect(helpers.mostBlogs(blogs)).toEqual(mostBlogs);
+  });
+});
