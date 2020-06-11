@@ -10,9 +10,8 @@ const totalLikes = (blogs) => {
 };
 
 const favoriteBlog = (blogs) => {
-  const maxLikes = blogs
-    .map((blog) => blog.likes)
-    .reduce((maxLikes, likes) => (likes > maxLikes ? likes : maxLikes));
+  const likes = blogs.map((blog) => blog.likes);
+  const maxLikes = Math.max(...likes);
   const favorite = blogs.find((blog) => blog.likes === maxLikes);
   return {
     author: favorite.author,

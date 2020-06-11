@@ -45,7 +45,7 @@ describe("Total likes", () => {
     expect(helpers.totalLikes(listWithOneBlog)).toBe(totalLikes);
   });
 
-  test("One blog returns its number of likes", () => {
+  test("Multiple blogs returns sum of all likes", () => {
     const totalLikes = 11;
     expect(helpers.totalLikes(listWithMultipleBlogs)).toBe(totalLikes);
   });
@@ -59,5 +59,14 @@ describe("Favorite blog", () => {
       likes: 5,
     };
     expect(helpers.favoriteBlog(listWithOneBlog)).toEqual(favoriteBlog);
+  });
+
+  test("Multiple blogs returns blog with most likes", () => {
+    const favoriteBlog = {
+      author: "second author",
+      title: "second title",
+      likes: 6,
+    };
+    expect(helpers.favoriteBlog(listWithMultipleBlogs)).toEqual(favoriteBlog);
   });
 });
