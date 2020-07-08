@@ -20,6 +20,7 @@ const nonExistingId = async () => {
     title: "willremovethissoon",
     author: "No Author",
     url: "test.com",
+    likes: 1,
   });
   await note.save();
   await note.remove();
@@ -32,4 +33,4 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
-module.exports = { initialBlogs, blogsInDb };
+module.exports = { initialBlogs, blogsInDb, nonExistingId };

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 const Blog = require("../models/blog");
-const { initialBlogs, blogsInDb } = require("./test_helper");
+const { initialBlogs, blogsInDb, nonExistingId } = require("./test_helper");
 
 const api = supertest(app);
 
@@ -31,6 +31,23 @@ describe("Retrieving all notes", () => {
     const response = await api.get("/api/blogs");
     const firstBlog = response.body[0];
     expect(firstBlog.id).toBeDefined();
+  });
+});
+
+describe("Get one blog", () => {
+  test("can retrieve single blog with valid id", async () => {
+    const blogs = await blogsInDb();
+    const validId = blogs[0].id;
+
+    await api
+      .get(`/api/blogs/${validId}`)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+  });
+
+  test("should give 404 when given invalid id", async () => {
+    const invalidId = await nonExistingId();
+    await api.get(`/api/blogs/${invalidId}`).expect(404);
   });
 });
 
