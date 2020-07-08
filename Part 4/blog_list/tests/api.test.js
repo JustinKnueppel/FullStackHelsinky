@@ -51,6 +51,25 @@ describe("Get one blog", () => {
   });
 });
 
+describe("Delete blog", () => {
+  test("should have one fewer blogs after deletion of existing blog", async () => {
+    const blogs = await blogsInDb();
+
+    const id = blogs[0].id;
+
+    await api.delete(`/api/blogs/${id}`).expect(204);
+    const blogsAfterDeletion = await blogsInDb();
+    expect(blogsAfterDeletion.length).toEqual(initialBlogs.length - 1);
+  });
+
+  test("should have same number of blogs after attempting to delete invalid blog", async () => {
+    const id = await nonExistingId();
+    await api.delete(`/api/blogs/${id}`).expect(204);
+    const blogsAfterDeletion = await blogsInDb();
+    expect(blogsAfterDeletion.length).toEqual(initialBlogs.length);
+  });
+});
+
 describe("Adding a blog", () => {
   test("Can add blog with all required elements", async () => {
     const newBlog = new Blog({
