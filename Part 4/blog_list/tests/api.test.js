@@ -132,4 +132,24 @@ describe("Adding a blog", () => {
   });
 });
 
+describe("Updating a blog", () => {
+  test("Can update likes of blog", async () => {
+    const blogs = await blogsInDb();
+    const blog = blogs[0];
+    const startingLikes = blog.likes;
+    const id = blog.id;
+    const newBlog = {
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+      likes: blog.likes + 1,
+    };
+    await api.put(`/api/blogs/${id}`).send(newBlog).expect(200);
+    const response = await api.get(`/api/blogs/${id}`);
+    const blogAfterPut = response.body;
+
+    expect(blogAfterPut.likes).toEqual(startingLikes + 1);
+  });
+});
+
 afterAll(() => mongoose.connection.close());
