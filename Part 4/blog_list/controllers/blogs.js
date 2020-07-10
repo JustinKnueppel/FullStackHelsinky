@@ -3,7 +3,7 @@ const Blog = require("../models/blog");
 
 blogsRouter.get("/", async (request, response, next) => {
   try {
-    const blogs = await Blog.find({});
+    const blogs = await Blog.find({}).populate("user");
     response.json(blogs);
   } catch (exception) {
     next(exception);
@@ -13,7 +13,7 @@ blogsRouter.get("/", async (request, response, next) => {
 blogsRouter.get("/:id", async (request, response, next) => {
   try {
     const id = request.params.id;
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(id).populate("user");
 
     if (!blog) {
       return response.status(404).send();
