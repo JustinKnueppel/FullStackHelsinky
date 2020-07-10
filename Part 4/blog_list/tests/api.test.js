@@ -302,6 +302,26 @@ describe("Users", () => {
       const usernames = users.map((user) => user.username);
       expect(usernames).toContain("New Username");
     });
+
+    test("should fail if username is < 3 characters", async () => {
+      const user = {
+        name: "New Name",
+        username: "a",
+        password: "pw123",
+      };
+
+      await api.post("/api/users").send(user).expect(400);
+    });
+
+    test("should fail if password is < 3 characters", async () => {
+      const user = {
+        name: "New Name",
+        username: "New Username",
+        password: "ab",
+      };
+
+      await api.post("/api/users").send(user).expect(400);
+    });
   });
 });
 

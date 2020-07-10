@@ -29,6 +29,11 @@ userRouter.post("/", async (request, response, next) => {
     if (!body.password) {
       return response.status(400).send({ error: "Password required" });
     }
+    if (body.password.length < 3) {
+      return response
+        .status(400)
+        .send({ error: "Password must be at least 3 characters" });
+    }
     const passwordHash = await bcrypt.hash(body.password, 10);
     const user = new User({
       username: body.username,
