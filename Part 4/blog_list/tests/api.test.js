@@ -200,10 +200,6 @@ describe("Users", () => {
     );
     const blogPromiseArray = blogObjects.map((blog) => blog.save());
     await Promise.all(blogPromiseArray);
-    userObjects[0].blogs = userObjects[0].blogs.concat(
-      blogObjects.map((blog) => blog._id)
-    );
-    await userObjects[0].save();
   });
 
   describe("Get all users", () => {
