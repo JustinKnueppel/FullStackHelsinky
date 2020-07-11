@@ -18,7 +18,12 @@ userRouter.get("/", async (request, response, next) => {
 
 userRouter.get("/:id", async (request, response, next) => {
   try {
-    const user = await User.findById(request.params.id);
+    const user = await User.findById(request.params.id).populate("blogs", {
+      author: 1,
+      title: 1,
+      url: 1,
+      likes: 1,
+    });
     if (user === null) {
       return response.status(404).send({ error: "User not found" });
     }
@@ -51,6 +56,15 @@ userRouter.post("/", async (request, response, next) => {
       name: savedUser.name,
       id: savedUser._id,
     });
+  } catch (exception) {
+    next(exception);
+  }
+});
+
+userRouter.delete("/:id", async (request, response, next) => {
+  try {
+    await User.findByIdAndRemove(request.params.id);
+    response.status(204).end();
   } catch (exception) {
     next(exception);
   }
