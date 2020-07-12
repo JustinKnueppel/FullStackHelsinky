@@ -21,4 +21,4 @@ const postBlog = async (blog, token) => {
   }
 };
 
-export { getAll, postBlog };
+export default { getAll, postBlog };
