@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 const supertest = require("supertest");
 const app = require("../app");
 const Blog = require("../models/blog");
 const User = require("../models/user");
 const helpers = require("./test_helper");
+const blog = require("../models/blog");
 
 const api = supertest(app);
 
@@ -73,7 +75,19 @@ describe("Blogs", () => {
 
       const id = blogs[0].id;
 
-      await api.delete(`/api/blogs/${id}`).expect(204);
+      const user = helpers.initialUsers[0];
+      const userForToken = {
+        username: user.username,
+        id: blogs[0].user.toString(),
+      };
+
+      const token = jwt.sign(userForToken, process.env.SECRET);
+
+      await api
+        .delete(`/api/blogs/${id}`)
+        .set("Authorization", `bearer ${token}`)
+        .expect(204);
+
       const blogsAfterDeletion = await helpers.blogsInDb();
       expect(blogsAfterDeletion.length).toEqual(
         helpers.initialBlogs.length - 1
@@ -82,7 +96,22 @@ describe("Blogs", () => {
 
     test("should have same number of blogs after attempting to delete invalid blog", async () => {
       const id = await helpers.nonExistingBlogId();
-      await api.delete(`/api/blogs/${id}`).expect(204);
+
+      const user = await User.find({
+        username: helpers.initialUsers[0].username,
+      });
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      };
+
+      const token = jwt.sign(userForToken, process.env.SECRET);
+
+      await api
+        .delete(`/api/blogs/${id}`)
+        .set("Authorization", `bearer ${token}`)
+        .expect(204);
+
       const blogsAfterDeletion = await helpers.blogsInDb();
       expect(blogsAfterDeletion.length).toEqual(helpers.initialBlogs.length);
     });
