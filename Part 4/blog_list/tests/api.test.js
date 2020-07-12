@@ -119,17 +119,20 @@ describe("Blogs", () => {
 
   describe("Adding a blog", () => {
     test("Can add blog with all required elements", async () => {
-      const singleUser = await User.findOne({});
-      const newBlog = new Blog({
+      const user = await User.findOne({});
+      const userForToken = { username: user.username, id: user._id };
+      const token = jwt.sign(userForToken, process.env.SECRET);
+
+      const newBlog = {
         title: "New blog",
         author: "Big Author",
         url: "newblog.com",
         likes: 1,
-        user: singleUser._id,
-      });
+      };
 
       await api
         .post("/api/blogs")
+        .set("Authorization", `bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -142,17 +145,19 @@ describe("Blogs", () => {
     });
 
     test("Likes default to 0", async () => {
-      const singleUser = await User.findOne({});
+      const user = await User.findOne({});
+      const userForToken = { username: user.username, id: user._id };
+      const token = jwt.sign(userForToken, process.env.SECRET);
 
-      const newBlog = new Blog({
+      const newBlog = {
         title: "New blog",
         author: "Big Author",
         url: "newblog.com",
-        user: singleUser._id,
-      });
+      };
 
       await api
         .post("/api/blogs")
+        .set("Authorization", `bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -164,27 +169,39 @@ describe("Blogs", () => {
     });
 
     test("Title is required for new blog", async () => {
-      const singleUser = await User.findOne({});
-      const newBlog = new Blog({
+      const user = await User.findOne({});
+      const userForToken = { username: user.username, id: user._id };
+      const token = jwt.sign(userForToken, process.env.SECRET);
+
+      const newBlog = {
         author: "Big Author",
         url: "newblog.com",
         likes: 1,
-        user: singleUser._id,
-      });
+      };
 
-      await api.post("/api/blogs").send(newBlog).expect(400);
+      await api
+        .post("/api/blogs")
+        .set("Authorization", `bearer ${token}`)
+        .send(newBlog)
+        .expect(400);
     });
 
     test("Url is required for new blog", async () => {
-      const singleUser = await User.findOne({});
-      const newBlog = new Blog({
+      const user = await User.findOne({});
+      const userForToken = { username: user.username, id: user._id };
+      const token = jwt.sign(userForToken, process.env.SECRET);
+
+      const newBlog = {
         title: "New blog",
         author: "Big Author",
         likes: 1,
-        user: singleUser._id,
-      });
+      };
 
-      await api.post("/api/blogs").send(newBlog).expect(400);
+      await api
+        .post("/api/blogs")
+        .set("Authorization", `bearer ${token}`)
+        .send(newBlog)
+        .expect(400);
     });
   });
 

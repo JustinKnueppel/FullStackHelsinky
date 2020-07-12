@@ -31,6 +31,9 @@ blogsRouter.get("/:id", async (request, response, next) => {
 
 blogsRouter.post("/", async (request, response, next) => {
   try {
+    if (!request.token) {
+      return response.status(401).send({ error: "Unauthorized" });
+    }
     const decodedToken = jwt.decode(request.token, process.env.SECRET);
     const user = await User.findById(decodedToken.id);
 
