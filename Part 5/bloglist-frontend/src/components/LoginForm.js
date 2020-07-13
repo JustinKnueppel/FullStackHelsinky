@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { authenticate } from "../services/login";
+import loginService from "../services/login";
 import FormGroup from "./FormGroup";
 
 const LoginForm = ({ setUser }) => {
@@ -9,7 +9,7 @@ const LoginForm = ({ setUser }) => {
   const attemptAuthentication = async (event) => {
     event.preventDefault();
     try {
-      const user = await authenticate(username, password);
+      const user = await loginService.authenticate(username, password);
       setUser(user);
     } catch (exception) {
       alert("Invalid credentials");

@@ -3,6 +3,7 @@ import Blogs from "./components/Blogs";
 import LoginForm from "./components/LoginForm";
 import BlogForm from "./components/BlogForm";
 import blogService from "./services/blogs";
+import loginService from "./services/login";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -10,6 +11,10 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
+  }, []);
+
+  useEffect(() => {
+    setUser(loginService.loadSavedUser());
   }, []);
 
   const addBlog = async (blog) => {
@@ -23,16 +28,22 @@ const App = () => {
     }
   };
 
+  const logout = () => {
+    setUser(null);
+    loginService.removeSavedUser();
+  };
+
+  const login = (user) => {
+    setUser(user);
+    loginService.saveUser(user);
+  };
+
   return (
     <div>
       {user === null ? "" : <h2>Logged in as {user.name}</h2>}
+      {user === null ? "" : <button onClick={logout}>Logout</button>}
       {user === null ? (
-        ""
-      ) : (
-        <button onClick={() => setUser(null)}>Logout</button>
-      )}
-      {user === null ? (
-        <LoginForm setUser={setUser} />
+        <LoginForm setUser={login} />
       ) : (
         <BlogForm addBlog={addBlog} />
       )}

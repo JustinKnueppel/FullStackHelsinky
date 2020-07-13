@@ -6,4 +6,17 @@ const authenticate = async (username, password) => {
   return response.data;
 };
 
-export { authenticate };
+const loadSavedUser = () => {
+  const userJson = window.localStorage.getItem("blogUser");
+  return userJson ? JSON.parse(userJson) : null;
+};
+
+const saveUser = (user) => {
+  window.localStorage.setItem("blogUser", JSON.stringify(user));
+};
+
+const removeSavedUser = () => {
+  window.localStorage.removeItem("blogUser");
+};
+
+export default { authenticate, saveUser, removeSavedUser, loadSavedUser };
