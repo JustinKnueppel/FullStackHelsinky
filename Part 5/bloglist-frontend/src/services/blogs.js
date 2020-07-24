@@ -13,12 +13,8 @@ const postBlog = async (blog, token) => {
     },
   };
 
-  try {
-    const response = await axios.post(baseUrl, blog, config);
-    return response.data;
-  } catch (exception) {
-    alert(exception);
-  }
+  const response = await axios.post(baseUrl, blog, config);
+  return response.data;
 };
 
 export default { getAll, postBlog };

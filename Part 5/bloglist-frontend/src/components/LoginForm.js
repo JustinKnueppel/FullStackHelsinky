@@ -2,22 +2,17 @@ import React, { useState } from "react";
 import loginService from "../services/login";
 import FormGroup from "./FormGroup";
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = ({ attemptLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const attemptAuthentication = async (event) => {
+  const submitCredentials = async (event) => {
     event.preventDefault();
-    try {
-      const user = await loginService.authenticate(username, password);
-      setUser(user);
-    } catch (exception) {
-      alert("Invalid credentials");
-    }
+    attemptLogin(username, password)
   };
 
   return (
-    <form onSubmit={attemptAuthentication}>
+    <form onSubmit={submitCredentials}>
       <FormGroup>
         <label htmlFor="username">Username</label>
         <input
