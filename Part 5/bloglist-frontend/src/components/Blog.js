@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likeBlog }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   return (
@@ -8,6 +8,7 @@ const Blog = ({ blog }) => {
       <button onClick={() => setShowDetails(!showDetails)}>
         {showDetails ? "hide" : "details"}
       </button>
+      <button onClick={() => likeBlog(blog)}>Like</button>
       {showDetails && (
         <div>
           <p>{blog.url}</p>

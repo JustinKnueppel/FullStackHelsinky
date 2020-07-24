@@ -62,6 +62,21 @@ const App = () => {
     }
   };
 
+  const incrementLikes = async (targetBlog) => {
+    const newBlog = {
+      ...targetBlog,
+      likes: targetBlog.likes + 1
+    }
+
+    try {
+      await blogService.updateBlog(targetBlog.id, newBlog, user.token);
+      setBlogs(blogs.map(blog => blog.id === newBlog.id ? newBlog : blog));
+      displayNotificaiton("success", `Updated ${targetBlog.title}`)
+    } catch (exception) {
+      displayNotificaiton("error", "Failed to update blog")
+    }
+  }
+
   return (
     <div>
       {showNotification && (
@@ -74,7 +89,7 @@ const App = () => {
       ) : (
         <Toggleable label="Add Blog"><BlogForm addBlog={addBlog} /></Toggleable>
       )}
-      <Blogs blogs={blogs} />
+      <Blogs blogs={blogs} likeBlog={incrementLikes} />
     </div>
   );
 };
