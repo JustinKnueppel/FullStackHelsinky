@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Toggleable from "./components/Toggleable"
+import Toggleable from "./components/Toggleable";
 import Blogs from "./components/Blogs";
 import LoginForm from "./components/LoginForm";
 import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
-import "./App.css"
+import "./App.css";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -58,24 +58,35 @@ const App = () => {
       loginService.saveUser(newUser);
       displayNotificaiton("success", `${newUser.name} logged in`);
     } catch (exception) {
-      displayNotificaiton("error", "Invalid credentials")
+      displayNotificaiton("error", "Invalid credentials");
     }
   };
 
   const incrementLikes = async (targetBlog) => {
     const newBlog = {
       ...targetBlog,
-      likes: targetBlog.likes + 1
-    }
+      likes: targetBlog.likes + 1,
+    };
 
     try {
       await blogService.updateBlog(targetBlog.id, newBlog, user.token);
-      setBlogs(blogs.map(blog => blog.id === newBlog.id ? newBlog : blog));
-      displayNotificaiton("success", `Updated ${targetBlog.title}`)
+      setBlogs(blogs.map((blog) => (blog.id === newBlog.id ? newBlog : blog)));
+      displayNotificaiton("success", `Updated ${targetBlog.title}`);
     } catch (exception) {
-      displayNotificaiton("error", "Failed to update blog")
+      displayNotificaiton("error", "Failed to update blog");
     }
-  }
+  };
+
+  const deleteBlog = async (targetBlog) => {
+    const { id } = targetBlog;
+    try {
+      await blogService.deleteBlog(id, user.token);
+      setBlogs(blogs.filter((blog) => blog.id !== targetBlog.id));
+      displayNotificaiton("success", `${targetBlog.title} deleted`);
+    } catch (exception) {
+      displayNotificaiton("error", `Failed to delete ${targetBlog.title}`);
+    }
+  };
 
   return (
     <div>
@@ -85,11 +96,15 @@ const App = () => {
       {user === null ? "" : <h2>Logged in as {user.name}</h2>}
       {user === null ? "" : <button onClick={logout}>Logout</button>}
       {user === null ? (
-        <Toggleable label="Login"><LoginForm attemptLogin={attemptLogin} /></Toggleable>
+        <Toggleable label="Login">
+          <LoginForm attemptLogin={attemptLogin} />
+        </Toggleable>
       ) : (
-        <Toggleable label="Add Blog"><BlogForm addBlog={addBlog} /></Toggleable>
+        <Toggleable label="Add Blog">
+          <BlogForm addBlog={addBlog} />
+        </Toggleable>
       )}
-      <Blogs blogs={blogs} likeBlog={incrementLikes} />
+      <Blogs blogs={blogs} likeBlog={incrementLikes} deleteBlog={deleteBlog} />
     </div>
   );
 };
