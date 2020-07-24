@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Toggleable from "./components/Toggleable"
 import Blogs from "./components/Blogs";
 import LoginForm from "./components/LoginForm";
 import BlogForm from "./components/BlogForm";
@@ -69,9 +70,9 @@ const App = () => {
       {user === null ? "" : <h2>Logged in as {user.name}</h2>}
       {user === null ? "" : <button onClick={logout}>Logout</button>}
       {user === null ? (
-        <LoginForm attemptLogin={attemptLogin} />
+        <Toggleable label="Login"><LoginForm attemptLogin={attemptLogin} /></Toggleable>
       ) : (
-        <BlogForm addBlog={addBlog} />
+        <Toggleable label="Add Blog"><BlogForm addBlog={addBlog} /></Toggleable>
       )}
       <Blogs blogs={blogs} />
     </div>

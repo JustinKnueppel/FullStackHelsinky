@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import loginService from "../services/login";
 import FormGroup from "./FormGroup";
 
 const LoginForm = ({ attemptLogin }) => {
