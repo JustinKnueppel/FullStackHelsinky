@@ -7,7 +7,7 @@ const LoginForm = ({ attemptLogin }) => {
 
   const submitCredentials = async (event) => {
     event.preventDefault();
-    attemptLogin(username, password)
+    attemptLogin(username, password);
   };
 
   return (
