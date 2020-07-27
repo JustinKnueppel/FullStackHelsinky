@@ -2,7 +2,6 @@ const config = require("./utils/config");
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const testRouter = require("./controllers/test");
 const blogsRouter = require("./controllers/blogs");
 const userRouter = require("./controllers/users");
 const loginRouter = require("./controllers/login");
@@ -31,7 +30,8 @@ app.use(middleware.requestLogger);
 app.use(middleware.tokenExtractor);
 
 if (process.env.NODE_ENV === "test") {
-  app.use("/api/test", testRouter);
+  const testingRouter = require("./controllers/testing");
+  app.use("/api/testing", testingRouter);
 }
 
 app.use("/api/users", userRouter);
