@@ -36,16 +36,10 @@ describe("Blog app", function () {
 
   describe.only("When logged in", function () {
     beforeEach(function () {
-      const user = {
+      cy.login({
         username: "just",
         password: "pw123",
-      };
-      cy.request("POST", "http://localhost:3001/api/login", user).then(
-        (response) => {
-          localStorage.setItem("blogUser", JSON.stringify(response.body));
-        }
-      );
-      cy.visit("http://localhost:3000");
+      });
     });
 
     it("A blog can be created", function () {
@@ -59,24 +53,26 @@ describe("Blog app", function () {
     });
 
     it("A blog can be liked", function () {
-      cy.contains("Add blog").click();
-      cy.get("input[name='title']").type("Test title");
-      cy.get("input[name='author']").type("Test author");
-      cy.get("input[name='url']").type("Test url");
-      cy.get("input[name='likes']").type("1");
-      cy.get("button[type='submit']").click();
+      const blog = {
+        title: "Test title",
+        author: "Test author",
+        url: "Test url",
+        likes: 1,
+      };
+      cy.createBlog(blog);
       cy.contains("Test title").get(".like-btn").click();
       cy.contains("Test title").get(".visibility-btn").click();
       cy.contains("Test title").get(".blog-likes").should("contain", "2");
     });
 
-    it("A blog can be deleted by the person who added it", function() {
-      cy.contains("Add blog").click();
-      cy.get("input[name='title']").type("Test title");
-      cy.get("input[name='author']").type("Test author");
-      cy.get("input[name='url']").type("Test url");
-      cy.get("input[name='likes']").type("1");
-      cy.get("button[type='submit']").click();
+    it("A blog can be deleted by the person who added it", function () {
+      const blog = {
+        title: "Test title",
+        author: "Test author",
+        url: "Test url",
+        likes: 1,
+      };
+      cy.createBlog(blog);
       cy.contains("Test title").get(".delete-btn").click();
       cy.get(".success").contains("Test title deleted");
     });
