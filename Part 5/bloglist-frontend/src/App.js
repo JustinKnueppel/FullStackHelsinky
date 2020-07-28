@@ -100,7 +100,12 @@ const App = () => {
           <LoginForm attemptLogin={attemptLogin} />
         </Toggleable>
       ) : (
-        <Toggleable label="Add Blog">
+        ""
+      )}
+      {user === null ? (
+        ""
+      ) : (
+        <Toggleable label="Add blog">
           <BlogForm addBlog={addBlog} />
         </Toggleable>
       )}
