@@ -3,7 +3,7 @@ const Blog = ({ blog, likeBlog, deleteBlog }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <div>
+    <div className="blog" >
       {blog.title}
       <button className="visibility-btn" onClick={() => setShowDetails(!showDetails)}>
         {showDetails ? "hide" : "details"}

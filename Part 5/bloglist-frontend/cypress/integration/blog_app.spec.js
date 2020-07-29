@@ -34,7 +34,7 @@ describe("Blog app", function () {
     });
   });
 
-  describe.only("When logged in", function () {
+  describe("When logged in", function () {
     beforeEach(function () {
       cy.login({
         username: "just",
@@ -75,6 +75,35 @@ describe("Blog app", function () {
       cy.createBlog(blog);
       cy.contains("Test title").get(".delete-btn").click();
       cy.get(".success").contains("Test title deleted");
+    });
+
+    it("Blogs appear in order of likes", function () {
+      const blogs = [
+        {
+          title: "Test title1",
+          author: "Test author1",
+          url: "Test url1",
+          likes: 1,
+        },
+        {
+          title: "Test title3",
+          author: "Test author3",
+          url: "Test url3",
+          likes: 3,
+        },
+        {
+          title: "Test title2",
+          author: "Test author2",
+          url: "Test url2",
+          likes: 2,
+        },
+      ];
+      blogs.forEach((blog) => cy.createBlog(blog));
+      cy.get(".blog").then((blogs) => {
+        cy.wrap(blogs[0]).contains("Test title3");
+        cy.wrap(blogs[1]).contains("Test title2");
+        cy.wrap(blogs[2]).contains("Test title1");
+      });
     });
   });
 });
