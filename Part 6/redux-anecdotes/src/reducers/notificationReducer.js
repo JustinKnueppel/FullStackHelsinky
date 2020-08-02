@@ -28,17 +28,21 @@ export default (state = initialState, action) => {
   }
 };
 
-export const displayError = (text) => {
-  return {
-    type: "ERROR",
-    data: { text },
+export const displayError = (text, timeout) => {
+  return async (dispatch) => {
+    dispatch({ type: "ERROR", data: { text } });
+    setTimeout(() => {
+      dispatch(hideNotification());
+    }, timeout * 1000);
   };
 };
 
-export const displaySuccess = (text) => {
-  return {
-    type: "SUCCESS",
-    data: { text },
+export const displaySuccess = (text, timeout) => {
+  return async (dispatch) => {
+    dispatch({ type: "SUCCESS", data: { text } });
+    setTimeout(() => {
+      dispatch(hideNotification());
+    }, timeout * 1000);
   };
 };
 

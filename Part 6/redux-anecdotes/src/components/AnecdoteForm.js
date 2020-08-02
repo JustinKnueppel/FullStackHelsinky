@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { addAnecdote } from "../reducers/anecdoteReducer";
-import { displaySuccess, hideNotification } from "../reducers/notificationReducer";
+import { displaySuccess } from "../reducers/notificationReducer";
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
@@ -9,10 +9,7 @@ const AnecdoteForm = () => {
     event.preventDefault();
     const anecdote = event.target.anecdote.value;
     dispatch(addAnecdote(anecdote));
-    dispatch(displaySuccess("Anecdote added"));
-    setTimeout(() => {
-      dispatch(hideNotification())
-    }, 5000);
+    dispatch(displaySuccess("Anecdote added", 5));
   };
   return (
     <form onSubmit={handleSubmit}>
