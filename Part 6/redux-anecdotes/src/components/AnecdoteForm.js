@@ -1,15 +1,14 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import { addAnecdote } from "../reducers/anecdoteReducer";
 import { displaySuccess } from "../reducers/notificationReducer";
 
-const AnecdoteForm = () => {
-  const dispatch = useDispatch();
+const AnecdoteForm = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const anecdote = event.target.anecdote.value;
-    dispatch(addAnecdote(anecdote));
-    dispatch(displaySuccess("Anecdote added", 5));
+    props.addAnecdote(anecdote);
+    props.displaySuccess("Anecdote added", 5);
   };
   return (
     <form onSubmit={handleSubmit}>
@@ -21,4 +20,9 @@ const AnecdoteForm = () => {
   );
 };
 
-export default AnecdoteForm;
+const mapDispatchToProps = {
+  addAnecdote,
+  displaySuccess
+}
+
+export default connect(null, mapDispatchToProps)(AnecdoteForm);

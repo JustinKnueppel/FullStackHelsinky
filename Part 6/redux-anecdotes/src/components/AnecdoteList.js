@@ -1,11 +1,10 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { connect } from "react-redux";
 import Anecdote from "./Anecdote";
 
-const AnecdoteList = () => {
-  const { anecdotes, filter } = useSelector((state) => state);
-  const filteredAnecdotes = anecdotes.filter((anecdote) =>
-    anecdote.content.toLowerCase().includes(filter)
+const AnecdoteList = (props) => {
+  const filteredAnecdotes = props.anecdotes.filter((anecdote) =>
+    anecdote.content.toLowerCase().includes(props.filter)
   );
 
   return (
@@ -20,4 +19,12 @@ const AnecdoteList = () => {
   );
 };
 
-export default AnecdoteList;
+const mapStateToProps = (state) => {
+  return {
+    anecdotes: state.anecdotes,
+    filter: state.filter
+  }
+}
+
+
+export default connect(mapStateToProps)(AnecdoteList);
