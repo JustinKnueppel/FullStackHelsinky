@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 export const useField = (type) => {
   const [value, setValue] = useState("");
@@ -16,8 +17,19 @@ export const useField = (type) => {
 
 export const useCountry = (name) => {
   const [country, setCountry] = useState(null);
+  const url = `https://restcountries.eu/rest/v2/name/${name}?fullText=true`;
 
-  useEffect();
+  useEffect(() => {
+    if (name.length > 0) {
+      axios
+        .get(url)
+        .then((response) => {
+          console.log(response);
+          setCountry(response.data[0]);
+        })
+        .catch((error) => setCountry(null));
+    }
+  }, [name.length, url]);
 
   return country;
 };
