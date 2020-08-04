@@ -1,0 +1,9 @@
+nav a {
+  padding-right: 1em;
+}
+
+.success {
+  color: green;
+  background-color: lightgray;
+  border: 1px solid green;
+}
