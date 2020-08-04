@@ -3,9 +3,9 @@ import { useHistory } from "react-router-dom";
 import { useField } from "../hooks";
 
 const CreateNew = (props) => {
-  const content = useField("text");
-  const author = useField("text");
-  const info = useField("text");
+  const [content, resetContent] = useField("text");
+  const [author, resetAuthor] = useField("text");
+  const [info, resetInnfo] = useField("text");
   const history = useHistory();
 
   const handleSubmit = (e) => {
@@ -27,14 +27,17 @@ const CreateNew = (props) => {
         <div>
           content
           <input name="content" {...content} />
+          <button onClick={resetContent}>x</button>
         </div>
         <div>
           author
           <input name="author" {...author} />
+          <button onClick={resetAuthor}>x</button>
         </div>
         <div>
           url for more info
           <input name="info" {...info} />
+          <button onClick={resetInnfo}>x</button>
         </div>
         <button>create</button>
       </form>
