@@ -6,6 +6,7 @@ import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import { setError, setSuccess } from "./reducers/notificationReducer";
 import "./App.css";
 
 const App = () => {
@@ -36,19 +37,16 @@ const App = () => {
     try {
       const returnedBlog = await blogService.postBlog(blog, token);
       setBlogs(blogs.concat(returnedBlog));
-      displayNotificaiton(
-        "success",
-        `Added blog ${returnedBlog.title} by ${returnedBlog.author}`
-      );
+      setSuccess(`Added blog ${returnedBlog.title} by ${returnedBlog.author}`);
     } catch (exception) {
-      displayNotificaiton("error", "Unable to add blog");
+      setError("Unable to add blog");
     }
   };
 
   const logout = () => {
     setUser(null);
     loginService.removeSavedUser();
-    displayNotificaiton("success", "Logged out");
+    setSuccess("Logged out");
   };
 
   const attemptLogin = async (username, password) => {
@@ -56,9 +54,9 @@ const App = () => {
       const newUser = await loginService.authenticate(username, password);
       setUser(newUser);
       loginService.saveUser(newUser);
-      displayNotificaiton("success", `${newUser.name} logged in`);
+      setSuccess(`${newUser.name} logged in`);
     } catch (exception) {
-      displayNotificaiton("error", "Invalid credentials");
+      setError("Invalid credentials");
     }
   };
 
