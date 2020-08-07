@@ -37,6 +37,10 @@ blogsRouter.post("/", async (request, response, next) => {
     const decodedToken = jwt.decode(request.token, process.env.SECRET);
     const user = await User.findById(decodedToken.id);
 
+    if (!user) {
+      response.status(404).send({ error: "Invalid user" });
+    }
+
     const blog = new Blog({
       title: request.body.title,
       author: request.body.author,

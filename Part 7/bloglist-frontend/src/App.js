@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import Toggleable from "./components/Toggleable";
 import Blogs from "./components/Blogs";
 import LoginForm from "./components/LoginForm";
@@ -10,10 +11,9 @@ import { setError, setSuccess } from "./reducers/notificationReducer";
 import "./App.css";
 
 const App = () => {
+  const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
-  const [showNotification, setShowNotification] = useState(false);
-  const [notification, setNotification] = useState({ type: "", text: "" });
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -23,30 +23,24 @@ const App = () => {
     setUser(loginService.loadSavedUser());
   }, []);
 
-  const displayNotificaiton = async (type, text) => {
-    setNotification({ text, type });
-    setShowNotification(true);
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 5000);
-  };
-
   const addBlog = async (blog) => {
     const { token } = user;
 
     try {
       const returnedBlog = await blogService.postBlog(blog, token);
       setBlogs(blogs.concat(returnedBlog));
-      setSuccess(`Added blog ${returnedBlog.title} by ${returnedBlog.author}`);
+      dispatch(
+        setSuccess(`Added blog ${returnedBlog.title} by ${returnedBlog.author}`)
+      );
     } catch (exception) {
-      setError("Unable to add blog");
+      dispatch(setError("Unable to add blog"));
     }
   };
 
   const logout = () => {
     setUser(null);
     loginService.removeSavedUser();
-    setSuccess("Logged out");
+    dispatch(setSuccess("Logged out"));
   };
 
   const attemptLogin = async (username, password) => {
@@ -54,9 +48,9 @@ const App = () => {
       const newUser = await loginService.authenticate(username, password);
       setUser(newUser);
       loginService.saveUser(newUser);
-      setSuccess(`${newUser.name} logged in`);
+      dispatch(setSuccess(`${newUser.name} logged in`));
     } catch (exception) {
-      setError("Invalid credentials");
+      dispatch(setError("Invalid credentials"));
     }
   };
 
@@ -69,9 +63,9 @@ const App = () => {
     try {
       await blogService.updateBlog(targetBlog.id, newBlog, user.token);
       setBlogs(blogs.map((blog) => (blog.id === newBlog.id ? newBlog : blog)));
-      displayNotificaiton("success", `Updated ${targetBlog.title}`);
+      dispatch(setSuccess(`Updated ${targetBlog.title}`));
     } catch (exception) {
-      displayNotificaiton("error", "Failed to update blog");
+      dispatch(setError("Failed to update blog"));
     }
   };
 
@@ -80,17 +74,15 @@ const App = () => {
     try {
       await blogService.deleteBlog(id, user.token);
       setBlogs(blogs.filter((blog) => blog.id !== targetBlog.id));
-      displayNotificaiton("success", `${targetBlog.title} deleted`);
+      dispatch(setSuccess(`${targetBlog.title} deleted`));
     } catch (exception) {
-      displayNotificaiton("error", `Failed to delete ${targetBlog.title}`);
+      dispatch(setError(`Failed to delete ${targetBlog.title}`));
     }
   };
 
   return (
     <div>
-      {showNotification && (
-        <Notification type={notification.type} text={notification.text} />
-      )}
+      <Notification />
       {user === null ? "" : <h2>Logged in as {user.name}</h2>}
       {user === null ? "" : <button onClick={logout}>Logout</button>}
       {user === null ? (
