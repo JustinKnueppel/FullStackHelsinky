@@ -1,17 +1,29 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import FormGroup from "./FormGroup";
+import loginService from "../services/login";
+import { setUser } from "../reducers/userReducer";
+import { setSuccess, setError } from "../reducers/notificationReducer";
 
-const LoginForm = ({ attemptLogin }) => {
+const LoginForm = () => {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const submitCredentials = async (event) => {
+  const attemptLogin = async (event) => {
     event.preventDefault();
-    attemptLogin(username, password);
+    try {
+      const newUser = await loginService.authenticate(username, password);
+      dispatch(setUser(newUser));
+      loginService.saveUser(newUser);
+      dispatch(setSuccess(`${newUser.name} logged in`));
+    } catch (exception) {
+      dispatch(setError("Invalid credentials"));
+    }
   };
 
   return (
-    <form onSubmit={submitCredentials}>
+    <form onSubmit={attemptLogin}>
       <FormGroup>
         <label htmlFor="username">Username</label>
         <input

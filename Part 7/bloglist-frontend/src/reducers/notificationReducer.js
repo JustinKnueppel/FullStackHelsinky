@@ -7,22 +7,22 @@ const initialState = {
 
 export default (state = initialState, { type, payload }) => {
   switch (type) {
-    case "CLEAR":
+    case "CLEAR_NOTIFICATION":
       if (state.timeoutId) {
         clearTimeout(state.timeoutId);
       }
       return { ...state, timeoutId: null };
 
-    case "HIDE":
+    case "HIDE_NOTIFICATION":
       return initialState;
 
-    case "TIMEOUT":
+    case "TIMEOUT_NOTIFICATION":
       return {
         ...state,
         timeoutId: payload.id,
       };
 
-    case "SUCCESS":
+    case "SUCCESS_NOTIFICATION":
       return {
         ...state,
         type: "success",
@@ -30,7 +30,7 @@ export default (state = initialState, { type, payload }) => {
         ...payload,
       };
 
-    case "ERROR":
+    case "ERROR_NOTIFICATION":
       return {
         ...state,
         type: "error",
@@ -45,14 +45,14 @@ export default (state = initialState, { type, payload }) => {
 
 const setNotification = (type, text) => {
   return async (dispatch) => {
-    dispatch({ type: "CLEAR" });
+    dispatch({ type: "CLEAR_NOTIFICATION" });
     dispatch({ type, payload: { text } });
     const id = setTimeout(() => {
-      dispatch({ type: "HIDE" });
+      dispatch({ type: "HIDE_NOTIFICATION" });
     }, 5000);
-    dispatch({ type: "TIMEOUT", payload: { id } });
+    dispatch({ type: "TIMEOUT_NOTIFICATION", payload: { id } });
   };
 };
 
-export const setSuccess = (text) => setNotification("SUCCESS", text);
-export const setError = (text) => setNotification("ERROR", text);
+export const setSuccess = (text) => setNotification("SUCCESS_NOTIFICATION", text);
+export const setError = (text) => setNotification("ERROR_NOTIFICATION", text);

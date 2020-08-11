@@ -1,29 +1,42 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import FormGroup from "./FormGroup";
+import blogService from "../services/blogs";
+import { addBlog } from "../reducers/blogReducer";
+import { setSuccess, setError } from "../reducers/notificationReducer";
 
-const BlogForm = ({ addBlog }) => {
+const BlogForm = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
   const [likes, setLikes] = useState("");
 
-  const attemptPostBlog = (event) => {
+  const postBlog = async (event) => {
     event.preventDefault();
-
-    const likesNumber = likes && !isNaN(Number(likes)) ? Number(likes) : 0;
-
     const blog = {
       title,
       author,
       url,
-      likes: likesNumber,
+      likes: !isNaN(Number(likes)) ? Number(likes) : 0,
     };
 
-    addBlog(blog);
+    const { token } = user;
+
+    try {
+      const returnedBlog = await blogService.postBlog(blog, token);
+      dispatch(addBlog(returnedBlog));
+      dispatch(
+        setSuccess(`Added blog ${returnedBlog.title} by ${returnedBlog.author}`)
+      );
+    } catch (exception) {
+      dispatch(setError("Unable to add blog"));
+    }
   };
 
   return (
-    <form onSubmit={attemptPostBlog}>
+    <form onSubmit={postBlog}>
       <FormGroup>
         <label htmlFor="title">Title</label>
         <input
