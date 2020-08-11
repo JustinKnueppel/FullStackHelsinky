@@ -8,6 +8,7 @@ import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import { setError, setSuccess } from "./reducers/notificationReducer";
+import { setAll } from "./reducers/blogReducer";
 import "./App.css";
 
 const App = () => {
@@ -16,7 +17,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => dispatch(setAll(blogs)));
   }, []);
 
   useEffect(() => {
@@ -99,7 +100,7 @@ const App = () => {
           <BlogForm addBlog={addBlog} />
         </Toggleable>
       )}
-      <Blogs blogs={blogs} likeBlog={incrementLikes} deleteBlog={deleteBlog} />
+      <Blogs likeBlog={incrementLikes} deleteBlog={deleteBlog} />
     </div>
   );
 };

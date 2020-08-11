@@ -1,5 +1,3 @@
-import blogService from "../services/blogs";
-
 const initialState = [];
 
 export default (state = initialState, { type, payload }) => {
