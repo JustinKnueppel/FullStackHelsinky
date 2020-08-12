@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Switch, Route } from "react-router-dom";
 import Toggleable from "./components/Toggleable";
 import Blogs from "./components/Blogs";
 import LoginForm from "./components/LoginForm";
@@ -11,6 +12,7 @@ import { setError, setSuccess } from "./reducers/notificationReducer";
 import { setAll } from "./reducers/blogReducer";
 import { setUser, removeUser } from "./reducers/userReducer";
 import "./App.css";
+import Users from "./components/Users";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -54,7 +56,14 @@ const App = () => {
           <LoginForm />
         </Toggleable>
       )}
-      <Blogs />
+      <Switch>
+        <Route exact path="/">
+          <Blogs />
+        </Route>
+        <Route exact path="/users">
+          <Users />
+        </Route>
+      </Switch>
     </div>
   );
 };
