@@ -14,6 +14,7 @@ import { setUser, removeUser } from "./reducers/userReducer";
 import "./App.css";
 import Users from "./components/Users";
 import User from "./components/User";
+import Blog from "./components/Blog";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -66,6 +67,9 @@ const App = () => {
         </Route>
         <Route exact path="/users">
           <Users />
+        </Route>
+        <Route exact path="/blogs/:id">
+          <Blog />
         </Route>
       </Switch>
     </div>
