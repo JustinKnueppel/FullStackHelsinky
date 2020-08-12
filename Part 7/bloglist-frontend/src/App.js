@@ -15,6 +15,7 @@ import "./App.css";
 import Users from "./components/Users";
 import User from "./components/User";
 import Blog from "./components/Blog";
+import Navigation from "./components/Navigation";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -45,8 +46,8 @@ const App = () => {
 
   return (
     <div>
+      <Navigation />
       <Notification />
-      {user.show && <h2>Logged in as {user.name}</h2>}
       {user.show && <button onClick={logout}>Logout</button>}
       {user.show && (
         <Toggleable label="Add blog">
