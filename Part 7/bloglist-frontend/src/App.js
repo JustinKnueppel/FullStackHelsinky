@@ -13,6 +13,7 @@ import { setAll } from "./reducers/blogReducer";
 import { setUser, removeUser } from "./reducers/userReducer";
 import "./App.css";
 import Users from "./components/Users";
+import User from "./components/User";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -59,6 +60,9 @@ const App = () => {
       <Switch>
         <Route exact path="/">
           <Blogs />
+        </Route>
+        <Route exact path="/users/:id">
+          <User />
         </Route>
         <Route exact path="/users">
           <Users />
