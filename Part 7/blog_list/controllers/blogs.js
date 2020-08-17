@@ -2,6 +2,7 @@ const blogsRouter = require("express").Router();
 const jwt = require("jsonwebtoken");
 const Blog = require("../models/blog");
 const User = require("../models/user");
+const Comment = require("../models/comment");
 
 blogsRouter.get("/", async (request, response, next) => {
   try {
@@ -96,5 +97,49 @@ blogsRouter.put("/:id", async (request, response, next) => {
     next(exception);
   }
 });
+
+blogsRouter.get("/:id/comments", async (request, response, next) => {
+  try {
+    const blog = await Blog.findById(request.params.id);
+    if (!blog) {
+      response.status(404).send();
+      return;
+    }
+    response.status(200).json({ comments: blog.comments });
+  } catch (exception) {
+    next(exception);
+  }
+});
+
+blogsRouter.post("/:id/comments", async (request, response, next) => {
+  try {
+    const blog = await Blog.findById(request.params.id);
+    const comment = {
+      content: request.body.comment,
+      blog: blog._id,
+    };
+    const newComment = new Comment(comment);
+    await newComment.save();
+    response.status(201).send();
+  } catch (exception) {
+    next(exception);
+  }
+});
+
+blogsRouter.get(
+  "/:blogid/comments/:commentid",
+  async (request, response, next) => {
+    try {
+      const comment = await Comment.findById(request.params.commentid);
+      if (!comment) {
+        response.status(404).send();
+        return;
+      }
+      response.status(200).json(comment);
+    } catch (exception) {
+      next(exception);
+    }
+  }
+);
 
 module.exports = blogsRouter;
