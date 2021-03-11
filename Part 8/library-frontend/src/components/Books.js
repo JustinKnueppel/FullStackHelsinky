@@ -1,11 +1,14 @@
 import React from 'react'
+import { useQuery, gql } from "@apollo/client";
 
-const Books = (props) => {
-  if (!props.show) {
+
+const Books = ({ show, books }) => {
+  if (!show) {
     return null
   }
-
-  const books = []
+  if (!books) {
+    return <div>No books</div>
+  }
 
   return (
     <div>
