@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useMutation, gql } from "@apollo/client";
+import Select from "react-select";
 
 const EDIT_BIRTH_YEAR = gql`
   mutation editBirthYear($name: String!, $born: Int!) {
@@ -11,18 +12,25 @@ const EDIT_BIRTH_YEAR = gql`
 `;
 
 const Authors = ({ show, authors }) => {
-  const [name, setName] = useState("");
   const [born, setBorn] = useState("");
   const [editAuthor] = useMutation(EDIT_BIRTH_YEAR);
+  const options = authors.map((a) => {
+    return {
+      value: a.name,
+      label: a.name,
+    };
+  });
+  const [selectedAuthor, setSelectedAuthor] = useState(null);
 
   if (!show) {
     return null;
   }
 
   const submitBorn = () => {
-    editAuthor({ variables: { name, born: parseInt(born) } });
+    editAuthor({
+      variables: { name: selectedAuthor.value, born: parseInt(born) },
+    });
 
-    setName("");
     setBorn("");
   };
 
@@ -47,11 +55,10 @@ const Authors = ({ show, authors }) => {
       </table>
       <h2>Set birthyear</h2>
       <div>
-        Name:{" "}
-        <input
-          type="text"
-          value={name}
-          onChange={({ target }) => setName(target.value)}
+        <Select
+          defaultValue={selectedAuthor}
+          onChange={setSelectedAuthor}
+          options={options}
         />
       </div>
       <div>
